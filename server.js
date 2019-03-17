@@ -24,8 +24,7 @@ const database = {
   ]
 };
 app.get("/", (req, res) => {
-  console.log(req.headers);
-  res.send({ shiva: "aum namah Shivaya" });
+  res.json(database.users);
 });
 
 app.post("/signin", (req, res) => {
@@ -37,6 +36,19 @@ app.post("/signin", (req, res) => {
   } else {
     res.status(400).json("error loggin in");
   }
+});
+
+app.post("/register", (req, res) => {
+  const { email, name, password } = req.body;
+  database.users.push({
+    id: "789",
+    name: name,
+    email: email,
+    password: password,
+    entries: 0,
+    joined: new Date()
+  });
+  res.json(database.users[database.users.length - 1]);
 });
 
 app.listen(3000, () => {
