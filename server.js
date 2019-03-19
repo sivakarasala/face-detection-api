@@ -8,15 +8,22 @@ const signin = require("./controllers/signin");
 const profile = require("./controllers/profile");
 const image = require("./controllers/image");
 
-const db = knex({
-  client: "pg",
-  connection: {
-    host: "127.0.0.1",
-    user: "shambho",
-    password: "",
-    database: "smart-brain"
-  }
-});
+const db =
+  process.env.NODE_ENV === "development"
+    ? knex({
+        client: "pg",
+        connection: {
+          host: "127.0.0.1",
+          user: "shambho",
+          password: "",
+          database: "smart-brain"
+        }
+      })
+    : knex({
+        client: "pg",
+        connectionString: process.env.DATABASE_URL,
+        ssl: true
+      });
 
 const app = express();
 app.use(express.json());
@@ -39,7 +46,10 @@ app.get("/profile/:id", (req, res) => {
 app.put("/image", (req, res) => {
   image.handleImage(req, res, db);
 });
+app.post("/imageurl", (req, res) => {
+  image.handleApiCall(req, res);
+});
 
-app.listen(4000, () => {
-  console.log("aum namah shivaya");
+app.listen(process.env.PORT, () => {
+  console.log(`aum namah shivaya on port ${process.env.PORT}`);
 });
